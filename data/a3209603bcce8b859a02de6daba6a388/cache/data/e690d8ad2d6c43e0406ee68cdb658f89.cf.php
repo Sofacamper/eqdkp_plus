@@ -1,0 +1,1 @@
+a:2:{i:1;a:7:{s:2:"id";s:1:"1";s:4:"name";s:5:"Raids";s:5:"color";s:6:"00628c";s:7:"private";s:1:"0";s:4:"feed";N;s:6:"system";s:1:"1";s:4:"type";s:1:"1";}i:2;a:7:{s:2:"id";s:1:"2";s:4:"name";s:8:"Standard";s:5:"color";s:6:"ba1e1e";s:7:"private";s:1:"0";s:4:"feed";N;s:6:"system";s:1:"0";s:4:"type";s:1:"2";}}

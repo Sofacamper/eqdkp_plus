@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:c="http://base.google.com/cns/1.0">
+	<channel>
+		<title>Shoutbox</title>
+		<description>Envy Raidplaner - Shoutbox</description>
+		<link>http://envy-beta.linuxlounge.net/</link>
+		<language>de-DE</language>
+		<pubDate>Sun, 30 Dec 2012 16:50:15 +0100</pubDate>
+		<generator>EQDKP-PLUS Gamer CMS</generator>
+		<atom:link href="http://envy-beta.linuxlounge.net/data/a3209603bcce8b859a02de6daba6a388/shoutbox/shoutbox.xml" rel="self" type="application/rss+xml" />
+	</channel>
+</rss>

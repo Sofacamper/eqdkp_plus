@@ -1,0 +1,1 @@
+a:2:{s:13:"raidlogimport";a:3:{s:4:"code";s:13:"raidlogimport";s:7:"version";s:7:"0.6.1.0";s:6:"status";s:1:"1";}s:8:"shoutbox";a:3:{s:4:"code";s:8:"shoutbox";s:7:"version";s:5:"0.3.3";s:6:"status";s:1:"1";}}

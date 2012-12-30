@@ -1,0 +1,1 @@
+a:2:{s:3:"ids";a:1:{i:1;s:4:"core";}s:7:"plugins";a:1:{s:4:"core";s:4:"core";}}

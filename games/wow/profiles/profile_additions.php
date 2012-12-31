@@ -415,7 +415,7 @@
 				$this->game->glang('stamina')		=> $chardata['stats']['sta'],
 				$this->game->glang('intellect')		=> $chardata['stats']['int'],
 				$this->game->glang('spirit')		=> $chardata['stats']['spr'],
-				$this->game->glang('mastery')		=> round($chardata['stats']['mastery'], 2).'%',
+				//$this->game->glang('mastery')		=> round($chardata['stats']['mastery'], 2).'%',
 			),
 			'melee' => array(
 				$this->game->glang('mainHandDamage')=> $chardata['stats']['mainHandDmgMin']." - ".$chardata['stats']['mainHandDmgMax'],
@@ -425,7 +425,7 @@
 				$this->game->glang('mainHandSpeed')	=> round($chardata['stats']['mainHandSpeed'], 2),
 				$this->game->glang('hitPercent')	=> '+'.round($chardata['stats']['hitPercent'], 2).'%',
 				$this->game->glang('critChance')	=> round($chardata['stats']['crit'], 2).'%',
-				$this->game->glang('expertise')		=> round($chardata['stats']['mainHandExpertise'], 2).'%',
+				$this->game->glang('arp')		=> round($chardata['stats']['arpPercent'], 2).'%',
 			),
 			'range' => array(
 				$this->game->glang('damage')		=> (($chardata['stats']['rangedDmgMin'] > 0) ? $chardata['stats']['rangedDmgMin'] : '')." - ". (($chardata['stats']['rangedDmgMax'] > 0) ? $chardata['stats']['rangedDmgMax'] : ''),
@@ -434,6 +434,7 @@
 				$this->game->glang('rangedSpeed')	=> ($chardata['stats']['rangedSpeed'] > 0) ? $chardata['stats']['rangedSpeed'] : '-',
 				$this->game->glang('hitPercent')	=> '+'.round($chardata['stats']['hitPercent'], 2).'%',
 				$this->game->glang('critChance')	=> round($chardata['stats']['rangedCrit'], 2).'%',
+				$this->game->glang('arp')		=> round($chardata['stats']['arpPercent'], 2).'%',
 			),
 			'spell' => array(
 				$this->game->glang('spellpower')	=> $chardata['stats']['spellPower'],

@@ -707,7 +707,8 @@ if(!class_exists('wow')) {
 				'trinket2'	=> array('position' => 'right',		'bnetid' => '13'),
 
 				'mainHand'	=> array('position' => 'bottom',	'bnetid' => '15'),
-				'offHand'	=> array('position' => 'bottom',	'bnetid' => '16')
+				'offHand'	=> array('position' => 'bottom',	'bnetid' => '16'),
+				'relik'		=> array('position' => 'bottom',	'bnetid' => '17')
 			);
 
 			// reset the array

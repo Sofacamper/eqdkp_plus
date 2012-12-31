@@ -399,8 +399,7 @@ class bnet_armory {
 				
 		$data['items']['offHand'] = array();
 		$data['items']['offHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['16']['id']);
-		
-		
+				
 		$data['stats'] = array();
 		$data['stats']['health'] = utf8_decode($xml->characterInfo->characterTab->characterBars->health['effective']);  
 		//powerType

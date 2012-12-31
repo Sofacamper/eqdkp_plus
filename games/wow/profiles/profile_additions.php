@@ -425,6 +425,7 @@
 				$this->game->glang('mainHandSpeed')	=> round($chardata['stats']['mainHandSpeed'], 2),
 				$this->game->glang('hitPercent')	=> '+'.round($chardata['stats']['hitPercent'], 2).'%',
 				$this->game->glang('critChance')	=> round($chardata['stats']['crit'], 2).'%',
+				$this->game->glang('expertise')		=> round($chardata['stats']['mainHandExpertise'], 2).'%',
 				$this->game->glang('arp')		=> round($chardata['stats']['arpPercent'], 2).'%',
 			),
 			'range' => array(

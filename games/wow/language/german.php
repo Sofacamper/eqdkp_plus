@@ -32,7 +32,7 @@ $german_array = array(
 		8	=> 'Schamane',
 		9	=> 'Hexenmeister',
 		10	=> 'Krieger',
-		11	=> 'Mönch'
+		//11	=> 'Mönch' MoP
 	),
 	'races' => array(
 		'Unknown',
@@ -48,7 +48,7 @@ $german_array = array(
 		'Blutelf',
 		'Worg',
 		'Goblin',
-		'Pandaren'
+		//'Pandaren' MoP
 	),
 	'factions' => array(
 		'alliance'	=> 'Allianz',
@@ -228,7 +228,8 @@ $german_array = array(
 		'hitPercent'					=> 'Trefferwertung',
 		'critChance'					=> 'Kritische Trefferwertung',
 		'expertise'						=> 'Waffenkundewertung',
-		'mastery'						=> 'Meisterschaftswertung',
+		//'mastery'						=> 'Meisterschaftswertung',
+		'arp'							=> 'Rüstungsdurchschlag',		
 
 		'range'							=> 'Distanzkampf',
 		'damage'						=> 'Schaden',

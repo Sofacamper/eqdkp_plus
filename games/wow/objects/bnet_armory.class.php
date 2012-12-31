@@ -371,19 +371,16 @@ class bnet_armory {
 		$var = utf8_decode($xml->characterInfo->characterTab->characterBars->secondBar['type']); 
 		switch ($var) {
 			case m: //mana
-				$data['stats']['powerType'] = "mana";
+				$data['stats']['powerType'] = 'mana';
 				break;
-			case 1: //wut
-				$data['stats']['powerType'] = NULL;
+			case r: //wut
+				$data['stats']['powerType'] = 'rage';
 				break;
-			case 2: //energie
-				$data['stats']['powerType'] = NULL;
+			case e: //energie
+				$data['stats']['powerType'] = 'energy';
 				break;    
-			case 3: //runenmacht
-				$data['stats']['powerType'] = NULL;
-				break;
-			default:
-				$data['stats']['powerType'] = NULL;
+			case p: //runenmacht
+				$data['stats']['powerType'] = 'runic-power';
 				break;
 		}
 		

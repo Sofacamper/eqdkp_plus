@@ -345,61 +345,26 @@ class bnet_armory {
 		}
 		
 		$data['items']['averageItemLevelEquipped'] = round(($var/17),0);
-		
-		$data['items']['head'] = array();
 		$data['items']['head']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['0']['id']);
- 
-		$data['items']['neck'] = array();
 		$data['items']['neck']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['1']['id']);
-		
-		$data['items']['shoulder'] = array();
-		$data['items']['shoulder']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['2']['id']);
-		
-		$data['items']['back'] = array();
-		$data['items']['back']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['14']['id']);
-		
-		$data['items']['chest'] = array();
+		$data['items']['shoulder']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['2']['id']);		
+		$data['items']['back']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['14']['id']);		
 		$data['items']['chest']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['4']['id']);
-		
-		$data['items']['shirt'] = array();
-		$data['items']['shirt']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['3']['id']);
-		
-		$data['items']['tabart'] = array();
-		$data['items']['tabart']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['18']['id']);
-		
-		$data['items']['wrist'] = array();
+		$data['items']['shirt']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['3']['id']);		
+		$data['items']['tabart']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['18']['id']);		
 		$data['items']['wrist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['5']['id']);
-		
-		$data['items']['hands'] = array();
 		$data['items']['hands']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['9']['id']);
-		
-		$data['items']['waist'] = array();
 		$data['items']['waist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['8']['id']);
-		
-		$data['items']['legs'] = array();
 		$data['items']['legs']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['6']['id']);
-
-		$data['items']['feet'] = array();
 		$data['items']['feet']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['7']['id']);
-		
-		$data['items']['finger1'] = array();
 		$data['items']['finger1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['10']['id']);
-		
-		$data['items']['finger2'] = array();
 		$data['items']['finger2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['11']['id']);
-			
-		$data['items']['trinket1'] = array();
 		$data['items']['trinket1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['12']['id']);
-			
-		$data['items']['trinket2'] = array();
 		$data['items']['trinket2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['13']['id']);	
-		
-		$data['items']['mainHand'] = array();
 		$data['items']['mainHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['15']['id']);
-				
-		$data['items']['offHand'] = array();
 		$data['items']['offHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['16']['id']);
-				
+		$data['items']['relik']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['17']['id']);
+		
 		$data['stats'] = array();
 		$data['stats']['health'] = utf8_decode($xml->characterInfo->characterTab->characterBars->health['effective']);  
 		//powerType

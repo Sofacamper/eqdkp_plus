@@ -277,7 +277,7 @@ class bnet_armory {
 	* @return bol
 	*/
 	public function character($user, $realm, $force=false){
-		$user	= ucfirst(strtolower($$this->ConvertInput($user)));
+		$user	= ucfirst(strtolower($this->ConvertInput($user)));
 		$url = 'http://armory.wow-castle.de/character-sheet.xml?r=WoW-Castle+PvE&cn='.$user;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -688,7 +688,7 @@ class bnet_armory {
 		$guildData["emblem"]['backgroundColor'] = null;
 		$guildData["news"] = array();
 		$guildData["challenge"] = array();
-		return (!$errorchk) ? $guildData: $errorchk
+		return (!$errorchk) ? $guildData: $errorchk;
 	}
 
 	/**

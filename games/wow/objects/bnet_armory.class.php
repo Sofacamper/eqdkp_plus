@@ -673,16 +673,59 @@ class bnet_armory {
 	* @return bol
 	*/
 	public function guild($guild, $realm, $force=false){
-		$realm	= $this->ConvertInput($this->cleanServername($realm));
-		$guild	= $this->ConvertInput($guild);
-		$wowurl	= $this->_config['apiUrl'].sprintf('wow/guild/%s/%s?locale=%s&fields=members,achievements,news,challenge', $realm, $guild, $this->_config['locale']);
-		if(!$json	= $this->get_CachedData('guilddata_'.$guild.$realm, $force)){
-			$json	= $this->read_url($wowurl);
-			$this->set_CachedData($json, 'guilddata_'.$guild.$realm);
+		$guild = ucfirst(strtolower($this->ConvertInput($guild)));;
+		$url = 'http://armory.wow-castle.de/guild-info.xml?r=WoW-Castle+PvE&gn='.$guild;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: de-de, de;"));
+		$content = curl_exec ($ch);
+		curl_close ($ch);
+		$xml = new SimpleXMLElement($content);
+		$guildData = array();
+		$guildData["lastModified"] = null;
+		$guildData["name"] = utf8_decode($xml->guildInfo->guildHeader['name']);
+		$guildData["realm"] = utf8_decode($xml->guildInfo->guildHeader['realm']);
+		$guildData["battlegroup"] = utf8_decode($xml->guildInfo->guildHeader['battleGroup']);
+		$guildData["level"] = "null";
+		$guildData["side"] = utf8_decode($xml->guildInfo->guildHeader['faction']);
+		$guildData["achievementPoints"] = null;
+		$guildData["achievements"] = array();
+		
+		$guildData["members"] = array();
+		$var = utf8_decode($xml->guildInfo->guild->members['memberCount']);
+		for($i=0;$i<$var ;$i++) {	
+			$guildData["members"][$i] = array();
+			$guildData["members"][$i]['character']= array();
+			$guildData["members"][$i]['character']['name'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['name']);
+			$guildData["members"][$i]['character']['realm'] = utf8_decode($xml->guildInfo->guildHeader['realm']);
+			$guildData["members"][$i]['character']['battlegroup'] = utf8_decode($xml->guildInfo->guildHeader['battleGroup']);
+			$guildData["members"][$i]['character']['class'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['classId']);
+			$guildData["members"][$i]['character']['race'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['raceId']);
+			$guildData["members"][$i]['character']['gender'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['genderId']);
+			$guildData["members"][$i]['character']['level'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['level']);
+			$guildData["members"][$i]['character']['achievementPoints'] = utf8_decode($xml->guildInfo->guild->members->character[$i]['achPoints']);
+			$guildData["members"][$i]['character']['thumbnail'] = "NULL";
+			$guildData["members"][$i]['character']['guild'] = utf8_decode($xml->guildInfo->guildHeader['name']);
+			$guildData["members"][$i]['character']['spec'] = array();
+			$guildData["members"][$i]['character']['spec']['name'] = "NULL";
+			$guildData["members"][$i]['character']['spec']['role'] = "NULL";
+			$guildData["members"][$i]['character']['spec']['backgroundImage'] = "NULL";
+			$guildData["members"][$i]['character']['spec']['icon'] = "NULL";
+			$guildData["members"][$i]['character']['spec']['description'] = "NULL";
+			$guildData["members"][$i]['character']['spec']['order'] = "NULL";
+			$guildData["members"][$i]['rank'] =  utf8_decode($xml->guildInfo->guild->members->character[$i]['rank']);
 		}
-		$chardata	= json_decode($json, true);
-		$errorchk	= $this->CheckIfError($chardata);
-		return (!$errorchk) ? $chardata: $errorchk;
+		$guildData["emblem"] = array();
+		$guildData["emblem"]['icon'] = null;
+		$guildData["emblem"]['iconColor'] = null;
+		$guildData["emblem"]['border'] = null;
+		$guildData["emblem"]['borderColor'] = null;
+		$guildData["emblem"]['backgroundColor'] = null;
+		$guildData["news"] = array();
+		$guildData["challenge"] = array();
+		return (!$errorchk) ? $guildData: $errorchk
 	}
 
 	/**

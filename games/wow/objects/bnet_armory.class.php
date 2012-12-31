@@ -277,18 +277,312 @@ class bnet_armory {
 	* @return bol
 	*/
 	public function character($user, $realm, $force=false){
-		$realm	= $this->ConvertInput($this->cleanServername($realm));
-		$user	= $this->ConvertInput($user);
-		$wowurl	= $this->_config['apiUrl'].sprintf('wow/character/%s/%s?locale=%s&fields=guild,stats,feed,talents,items,reputation,titles,professions,appearance,mounts,pets,achievements,progression,pvp,quests,hunterPets,petSlots', $realm, $user, $this->_config['locale']);
-		$json	= $this->get_CachedData('chardata_'.$user.$realm, $force);		
-		if(!$json && ($this->chardataUpdates < $this->_config['maxChardataUpdates'])){
-			$json	= $this->read_url($wowurl);
-			$this->set_CachedData($json, 'chardata_'.$user.$realm);
-			$this->chardataUpdates++;
+		$user	= ucfirst(strtolower($$this->ConvertInput($user)));
+		$url = 'http://armory.wow-castle.de/character-sheet.xml?r=WoW-Castle+PvE&cn='.$user;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: de-de, de;"));
+		$content = curl_exec ($ch);
+		curl_close ($ch);
+		$xml = new SimpleXMLElement($content);
+		
+		$data = array();
+		$data['lastModified] '] = utf8_decode($xml->characterInfo->character['lastModified']).""; 
+		$data['name'] = utf8_decode($xml->characterInfo->character['name']).""; 
+		$data['realm'] = utf8_decode($xml->characterInfo->character['realm'])."";
+		$data['battleGroup'] = utf8_decode($xml->characterInfo->character['battleGroup'])."";
+		$data['class'] = utf8_decode($xml->characterInfo->character['classId'])."";
+		$data['race'] = utf8_decode($xml->characterInfo->character['raceId'])."";
+		$data['level'] = utf8_decode($xml->characterInfo->character['level'])."";
+		$data['achievementPoints'] = utf8_decode($xml->characterInfo->character['points'])."";
+		$data['thumbnail'] = NULL;
+		$data['calcClass']  = NULL;
+		
+		$data['guild'] = array();
+		$data['guild']['name'] = utf8_decode($xml->characterInfo->character['guildName'])."";;
+		$data['guild']['realm'] = utf8_decode($xml->characterInfo->character['realm'])."";
+		$data['guild']['battlegroup'] = utf8_decode($xml->characterInfo->character['battleGroup'])."";
+		$data['guild']['level'] = "NULL";
+		$data['guild']['members'] = NULL;
+		$data['guild']['achievementPoints'] = "NULL";
+		$data['guild']['emblem']= array();
+		$data['guild']['emblem']['icon'] = NULL;
+		$data['guild']['emblem']['iconColor'] = NULL;
+		$data['guild']['emblem']['border'] = NULL;
+		$data['guild']['emblem']['borderColor'] = NULL;
+		$data['guild']['emblem']['backgroundColor'] = NULL;
+		
+		$data['feed'] = array();
+		$file = 'http://armory.wow-castle.de/character-feed.atom?r=WoW-Castle+PvE&cn='.$user.'&locale=de_DE';
+		$feed = new DOMDocument('1.0', 'UTF-8');
+		$feed->preserveWhiteSpace = FALSE;
+		$feed->load($file);
+		$feed->preserveWhiteSpace = false;
+		$var=5;
+		for($i=0;$i<=$var;$i++){
+			if(strlen($feed->getElementsByTagName("content") ->item($i) ->firstChild ->nodeValue)<1) 
+				$var++;
+			else {
+				$data['feed'][$i] = array();
+				$data['feed'][$i]['type'] = "BOSSKILL";
+				$data['feed'][$i]['timestamp'] = $feed->getElementsByTagName("published") ->item($i) ->firstChild ->nodeValue;
+				$data['feed'][$i]['achievement'] = array();
+				$data['feed'][$i]['achievement']['id'] = null;
+				$data['feed'][$i]['achievement']['title'] = $feed->getElementsByTagName("content") ->item($i) ->firstChild ->nodeValue;
+				$data['feed'][$i]['achievement']['icon'] = "trade_engineering";
+			}
 		}
-		$chardata	= json_decode($json, true);
-		$errorchk	= $this->CheckIfError($chardata);
-		return (!$errorchk) ? $chardata: $errorchk;
+		
+		$data['items'] = array();
+		$var = null;
+
+		$data['items']['averageItemLevel'] = "Hier GS ?";
+		
+		for($i=0;$i<20;$i++) { //hack
+		$var= $var+utf8_decode($xml->characterInfo->characterTab->items->item[$i]['level']);
+		}
+		
+		$data['items']['averageItemLevelEquipped'] = round(($var/17),0);
+		
+		$data['items']['head'] = array();
+		$data['items']['head']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['0']['id']);
+ 
+		$data['items']['neck'] = array();
+		$data['items']['neck']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['1']['id']);
+		
+		$data['items']['shoulder'] = array();
+		$data['items']['shoulder']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['2']['id']);
+		
+		$data['items']['back'] = array();
+		$data['items']['back']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['14']['id']);
+		
+		$data['items']['chest'] = array();
+		$data['items']['chest']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['4']['id']);
+		
+		$data['items']['shirt'] = array();
+		$data['items']['shirt']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['3']['id']);
+		
+		$data['items']['tabart'] = array();
+		$data['items']['tabart']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['18']['id']);
+		
+		$data['items']['wrist'] = array();
+		$data['items']['wrist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['5']['id']);
+		
+		$data['items']['hands'] = array();
+		$data['items']['hands']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['9']['id']);
+		
+		$data['items']['waist'] = array();
+		$data['items']['waist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['8']['id']);
+		
+		$data['items']['legs'] = array();
+		$data['items']['legs']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['6']['id']);
+
+		$data['items']['feet'] = array();
+		$data['items']['feet']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['7']['id']);
+		
+		$data['items']['finger1'] = array();
+		$data['items']['finger1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['10']['id']);
+		
+		$data['items']['finger2'] = array();
+		$data['items']['finger2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['11']['id']);
+			
+		$data['items']['trinket1'] = array();
+		$data['items']['trinket1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['12']['id']);
+			
+		$data['items']['trinket2'] = array();
+		$data['items']['trinket2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['13']['id']);	
+		
+		$data['items']['mainHand'] = array();
+		$data['items']['mainHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['15']['id']);
+				
+		$data['items']['offHand'] = array();
+		$data['items']['offHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['16']['id']);
+		
+		
+		$data['stats'] = array();
+		$data['stats']['health'] = utf8_decode($xml->characterInfo->characterTab->characterBars->health['effective']);  
+		//powerType
+		$var = utf8_decode($xml->characterInfo->characterTab->characterBars->secondBar['type']); 
+		switch ($var) {
+			case m: //mana
+				$data['stats']['powerType'] = "mana";
+				break;
+			case 1: //wut
+				$data['stats']['powerType'] = NULL;
+				break;
+			case 2: //energie
+				$data['stats']['powerType'] = NULL;
+				break;    
+			case 3: //runenmacht
+				$data['stats']['powerType'] = NULL;
+				break;
+			default:
+				$data['stats']['powerType'] = NULL;
+				break;
+		}
+		
+		$data['stats']['power'] = utf8_decode($xml->characterInfo->characterTab->characterBars->secondBar['effective']);
+		$data['stats']['str'] = utf8_decode($xml->characterInfo->characterTab->baseStats->strength['effective']);  
+		$data['stats']['agi'] = utf8_decode($xml->characterInfo->characterTab->baseStats->agility['effective']); 
+		$data['stats']['sta'] = utf8_decode($xml->characterInfo->characterTab->baseStats->stamina['effective']); 
+		$data['stats']['int'] = utf8_decode($xml->characterInfo->characterTab->baseStats->intellect['effective']); 
+		$data['stats']['spr'] = utf8_decode($xml->characterInfo->characterTab->baseStats->spirit['effective']);  
+		$data['stats']['attackPower'] =  utf8_decode($xml->characterInfo->characterTab->melee->power['effective']);
+		$data['stats']['rangedAttackPower'] =  utf8_decode($xml->characterInfo->characterTab->ranged->power['effective']);
+		$data['stats']['pvpResilienceBonus'] =   utf8_decode($xml->characterInfo->characterTab->defenses->resilience['value']);
+		$data['stats']['mastery'] = "NULL";
+		$data['stats']['masteryRating'] = "NULL";
+		$data['stats']['crit'] = "NULL";
+		$data['stats']['critRating'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance['rating']);
+		$data['stats']['hitRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hitRating['value']);
+		$data['stats']['hasteRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hasteRating['hasteRating']);
+		$data['stats']['expertiseRating'] = "NULL";
+		$data['stats']['spellPower'] = utf8_decode($xml->characterInfo->characterTab->spell->bonusDamage['holy']);
+		$data['stats']['spellPen'] = utf8_decode($xml->characterInfo->characterTab->spell->penetration['value']);
+		$data['stats']['spellCrit'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance->holy['percent']);
+		$data['stats']['spellCritRating'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance['rating']);
+		$data['stats']['spellHitPercent'] = utf8_decode($xml->characterInfo->characterTab->spell->hitRating['increasedHitPercent']);
+		$data['stats']['spellHitRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hitRating['value']);
+		$data['stats']['mana5'] = utf8_decode($xml->characterInfo->characterTab->spell->manaRegen['notCasting']);
+		$data['stats']['mana5Combat'] = utf8_decode($xml->characterInfo->characterTab->spell->manaRegen['casting']);
+		$data['stats']['armor'] = utf8_decode($xml->characterInfo->characterTab->defenses->armor['base']);
+		$data['stats']['dodge'] = utf8_decode($xml->characterInfo->characterTab->defenses->dodge['percent']);
+		$data['stats']['dodgeRating'] = utf8_decode($xml->characterInfo->characterTab->defenses->dodge['rating']);
+		$data['stats']['parry'] = utf8_decode($xml->characterInfo->characterTab->defenses->parry['percent']);
+		$data['stats']['parryRating'] = utf8_decode($xml->characterInfo->characterTab->defenses->parry['rating']);
+		$data['stats']['block'] = utf8_decode($xml->characterInfo->characterTab->defenses->block['percent']);
+		$data['stats']['blockRating'] = utf8_decode($xml->characterInfo->characterTab->defenses->block['rating']);
+		$data['stats']['pvpResilience'] = utf8_decode($xml->characterInfo->characterTab->defenses->resilience['damagePercent']);
+		$data['stats']['pvpResilienceRating'] = utf8_decode($xml->characterInfo->characterTab->defenses->resilience['percent']);
+		$data['stats']['mainHandDmgMin'] = utf8_decode($xml->characterInfo->characterTab->melee->mainHandDamage['min']);
+		$data['stats']['mainHandDmgMax'] = utf8_decode($xml->characterInfo->characterTab->melee->mainHandDamage['max']);
+		$data['stats']['mainHandSpeed'] = utf8_decode($xml->characterInfo->characterTab->melee->mainHandDamage['speed']);
+		$data['stats']['mainHandDps'] = utf8_decode($xml->characterInfo->characterTab->melee->mainHandDamage['dps']);
+		$data['stats']['mainHandExpertise'] = utf8_decode($xml->characterInfo->characterTab->melee->expertise['value']);
+		$data['stats']['offHandDmgMin'] = utf8_decode($xml->characterInfo->characterTab->melee->offHandDamage['min']);
+		$data['stats']['offHandDmgMax'] = utf8_decode($xml->characterInfo->characterTab->melee->offHandDamage['max']);
+		$data['stats']['offHandSpeed'] = utf8_decode($xml->characterInfo->characterTab->melee->offHandDamage['speed']);
+		$data['stats']['offHandDps'] = utf8_decode($xml->characterInfo->characterTab->melee->offHandDamage['dps']);
+		$data['stats']['offHandExpertise'] = utf8_decode($xml->characterInfo->characterTab->melee->offHandDamage['value']);
+		$data['stats']['rangedDmgMin'] = utf8_decode($xml->characterInfo->characterTab->ranged->damage['min']);;
+		$data['stats']['rangedDmgMax'] = utf8_decode($xml->characterInfo->characterTab->ranged->damage['max']);
+		$data['stats']['rangedSpeed'] = utf8_decode($xml->characterInfo->characterTab->ranged->damage['speed']);
+		$data['stats']['rangedDps'] = utf8_decode($xml->characterInfo->characterTab->ranged->damage['dps']);
+		$data['stats']['rangedExpertise'] = "NULL";
+		$data['stats']['rangedCrit'] = utf8_decode($xml->characterInfo->characterTab->ranged->critChange['percent']);
+		$data['stats']['rangedCritRating'] = utf8_decode($xml->characterInfo->characterTab->ranged->critChange['rating']);
+		$data['stats']['rangedHitPercent'] = "NULL";
+		$data['stats']['rangedHitRating'] = "NULL";
+		$data['stats']['pvpPower'] = "NULL";
+		$data['stats']['pvpPowerRating'] = "NULL";
+		$data['stats']['pvpPowerDamage'] = "NULL";
+		$data['stats']['pvpPowerHealing'] = "NULL";
+		
+		$data['professions'] = array();
+		$data['professions']["primary"] = array();
+		$data['professions']["primary"]["0"]["id"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["0"]['id']);
+		$data['professions']["primary"]["0"]["name"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["0"]['name']);
+		$data['professions']["primary"]["0"]["icon"] = "NULL";
+		$data['professions']["primary"]["0"]["rank"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["0"]['value']);
+		$data['professions']["primary"]["0"]["max"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["0"]['max']);
+		$data['professions']["primary"]["0"]["recipes"] = array();
+		$data['professions']["primary"]["1"]["id"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["1"]['id']);
+		$data['professions']["primary"]["1"]["name"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["1"]['name']);
+		$data['professions']["primary"]["1"]["icon"] = "NULL";
+		$data['professions']["primary"]["1"]["rank"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["1"]['value']);
+		$data['professions']["primary"]["1"]["max"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["1"]['max']);
+		$data['professions']["primary"]["2"]["id"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["2"]['id']);
+		$data['professions']["primary"]["2"]["name"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["2"]['name']);
+		$data['professions']["primary"]["2"]["icon"] = "NULL";
+		$data['professions']["primary"]["2"]["rank"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["2"]['value']);
+		$data['professions']["primary"]["2"]["max"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["2"]['max']);
+		$data['professions']["primary"]["2"]["recipes"] = array();
+		$data['professions']["primary"]["3"]["id"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["3"]['id']);
+		$data['professions']["primary"]["3"]["name"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["3"]['name']);
+		$data['professions']["primary"]["3"]["icon"] = "NULL";
+		$data['professions']["primary"]["3"]["rank"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["3"]['value']);
+		$data['professions']["primary"]["3"]["max"] = utf8_decode($xml->characterInfo->characterTab->professions->skill["3"]['max']);
+		$data['professions']["primary"]["3"]["recipes"] = array();
+		
+		$data['professions']["secondary"]["0"]["id"] = "NULL";
+		$data['professions']["secondary"]["0"]["name"] = "NULL";
+		$data['professions']["secondary"]["0"]["icon"] = "NULL";
+		$data['professions']["secondary"]["0"]["rank"] = "NULL";
+		$data['professions']["secondary"]["0"]["max"] = "NULL";
+		$data['professions']["secondary"]["0"]["recipes"] = array();
+		$data['professions']["secondary"]["1"]["id"] = "NULL";
+		$data['professions']["secondary"]["1"]["name"] = "NULL";
+		$data['professions']["secondary"]["1"]["icon"] = "NULL";
+		$data['professions']["secondary"]["1"]["rank"] = "NULL";
+		$data['professions']["secondary"]["1"]["max"] = "NULL";
+		$data['professions']["secondary"]["1"]["recipes"] = array();
+		$data['professions']["secondary"]["2"]["id"] = "NULL";
+		$data['professions']["secondary"]["2"]["name"] = "NULL";
+		$data['professions']["secondary"]["2"]["icon"] = "NULL";
+		$data['professions']["secondary"]["2"]["rank"] = "NULL";
+		$data['professions']["secondary"]["2"]["max"] = "NULL";
+		$data['professions']["secondary"]["2"]["recipes"] = array();
+		$data['professions']["secondary"]["3"]["id"] = "NULL";
+		$data['professions']["secondary"]["3"]["name"] = "NULL";
+		$data['professions']["secondary"]["3"]["icon"] = "NULL";
+		$data['professions']["secondary"]["3"]["rank"] = "NULL";
+		$data['professions']["secondary"]["3"]["max"] = "NULL";
+		$data['professions']["secondary"]["3"]["recipes"] = array();
+		
+		$data['reputation'] = array();
+		$data['titles'] = array();
+		
+		$data['achievements'] = array();
+		$data['achievements']['achievementsCompleted']  = array();
+		$data['achievements']['achievementsCompletedTimestamp']  = array();
+		$data['achievements']['criteria']  = array();
+		$data['achievements']['criteriaQuantity']  = array();
+		$data['achievements']['criteriaTimestamp']  = array();
+		$data['achievements']['criteriaCreated']  = array();
+
+		$data['talents'] = array();
+		$data['talents']['0'] = array();
+		$data['talents']['0']['talents'] = array();
+		$data['talents']['0']['glyphs'] = array();
+		$data['talents']['0']['spec'] = array();
+		$data['talents']['0']['spec']['name'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['0']['prim']);
+		$data['talents']['0']['spec']['role'] = "NULL";
+		$data['talents']['0']['spec']['backgroundImage'] = "NULL";
+		$data['talents']['0']['spec']['icon'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['0']['icon']);
+		$data['talents']['0']['spec']['description'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['0']['prim'])."test1243";
+		$data['talents']['0']['spec']['order'] = "NULL";
+		$data['talents']['0']['calcTalent'] = "NULL";
+		$data['talents']['0']['calcSpec'] = "NULL";
+		$data['talents']['0']['calcGlyph'] = "NULL";
+		
+		$data['talents']['1']['talents'] = array();
+		$data['talents']['1']['glyphs'] = array();
+		$data['talents']['1']['spec'] = array();
+		$data['talents']['1']['spec']['name'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['1']['prim']);
+		$data['talents']['1']['spec']['role'] = "NULL";
+		$data['talents']['1']['spec']['backgroundImage'] = "bg-priest-discipline";
+		$data['talents']['1']['spec']['icon'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['1']['icon']);
+		$data['talents']['1']['spec']['description'] = "NULL";
+		$data['talents']['1']['spec']['order'] = "NULL";
+		$data['talents']['1']['calcTalent'] = "NULL";
+		$data['talents']['1']['calcSpec'] = "NULL";
+		$data['talents']['1']['calcGlyph'] = "NULL";		
+		
+		$data['appearance'] = array();
+		$data['mounts'] = array();
+		$data['pets'] = array();
+		$data['petSlots'] = array();
+		$data['progression'] = array();
+		$data['pvp'] = array();
+		$data['quests'] = array();
+		$data['pvp'] = array();
+		$data['pvp']['ratedBattlegrounds'] = array();
+		$data['pvp']['arenaTeams'] = array();
+		$data['pvp']['totalHonorableKills'] = "Null";
+		$data['achievement'] = array();
+		return $data;
 	}
 
 	/**

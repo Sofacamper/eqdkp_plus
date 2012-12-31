@@ -391,6 +391,7 @@ class bnet_armory {
 		$data['stats']['int'] = utf8_decode($xml->characterInfo->characterTab->baseStats->intellect['effective']); 
 		$data['stats']['spr'] = utf8_decode($xml->characterInfo->characterTab->baseStats->spirit['effective']);  
 		$data['stats']['attackPower'] =  utf8_decode($xml->characterInfo->characterTab->melee->power['effective']);
+		$data['stats']['arp'] =  utf8_decode($xml->characterInfo->characterTab->melee->hitRating['reducedArmorPercent']);
 		$data['stats']['rangedAttackPower'] =  utf8_decode($xml->characterInfo->characterTab->ranged->power['effective']);
 		$data['stats']['pvpResilienceBonus'] =   utf8_decode($xml->characterInfo->characterTab->defenses->resilience['value']);
 		$data['stats']['mastery'] = "NULL";

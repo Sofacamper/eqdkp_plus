@@ -244,18 +244,27 @@ class bnet_armory {
 	*/
 	public function a_bnlinks($user, $server, $guild=false){
 		return array(
-			'profil'				=> $this->bnlink($user, $server, 'char'),
-			'talents'				=> $this->bnlink($user, $server, 'talent'),
-			'profession'			=> $this->bnlink($user, $server, 'profession'),
-			'reputation'			=> $this->bnlink($user, $server, 'reputation'),
-			'pvp'					=> $this->bnlink($user, $server, 'pvp'),
-			'achievements'			=> $this->bnlink($user, $server, 'achievements'),
-			'statistics'			=> $this->bnlink($user, $server, 'statistics'),
-			'character-feed'		=> $this->bnlink($user, $server, 'character-feed'),
-			'guild'					=> $this->bnlink($user, $server, 'guild', $guild),
+			//'profil'			=> $this->bnlink($user, $server, 'char'),
+			'profil'			=> 'http://armory.wow-castle.de/character-sheet.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'talents'			=> $this->bnlink($user, $server, 'talent'),
+			'talents'			=> 'http://armory.wow-castle.de/character-talents.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'profession'			=> $this->bnlink($user, $server, 'profession'),
+			'profession'			=> 'http://armory.wow-castle.de/character-sheet.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'reputation'			=> $this->bnlink($user, $server, 'reputation'),
+			'reputation'			=> 'http://armory.wow-castle.de/character-reputation.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'pvp'				=> $this->bnlink($user, $server, 'pvp'),
+			'pvp'				=> 'http://armory.wow-castle.de/character-arenateams.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'achievements'		=> $this->bnlink($user, $server, 'achievements'),
+			'achievements'			=> 'http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'statistics'			=> $this->bnlink($user, $server, 'statistics'),
+			'statistics'			=> 'http://armory.wow-castle.de/character-statistics.xml?r=WoW-Castle+PvE&cn='.$user,
+			//'character-feed'		=> $this->bnlink($user, $server, 'character-feed'),
+			'character-feed'		=> 'http://armory.wow-castle.de/character-feed.xml?r=WoW-Castle+PvE&cn=Doomsta'.$user,
+			//'guild'			=> $this->bnlink($user, $server, 'guild', $guild),
+			'guild'				=> 'http://armory.wow-castle.de/guild-info.xml?r=WoW-Castle+PvE&gn='.$guild,
 
 			// external ones
-			'askmrrobot'			=> $this->bnlink($user, $server, 'askmrrobot'),
+			//'askmrrobot'			=> $this->bnlink($user, $server, 'askmrrobot'),
 		);
 	}
 

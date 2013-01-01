@@ -591,7 +591,7 @@
 			'CHARDATA_GUILDNAME'	=> $chardata['guild']['name'],
 			'CHARDATA_GUILDREALM'	=> $chardata['guild']['realm'],
 			'CHARDATA_POINTS'		=> $chardata['achievementPoints'],
-			'CHARDATA_TITLE'		=> $this->game->obj['armory']->selectedTitle($chardata['titles'], true),
+			'CHARDATA_TITLE'		=> $chardata['title'],
 
 			// Bars
 			'HEALTH_VALUE'			=> $chardata['stats']['health'],

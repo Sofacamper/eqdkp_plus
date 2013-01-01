@@ -320,7 +320,8 @@ class bnet_armory {
 		$data['race'] = utf8_decode($xml->characterInfo->character['raceId'])."";
 		$data['level'] = utf8_decode($xml->characterInfo->character['level'])."";
 		$data['achievementPoints'] = utf8_decode($xml->characterInfo->character['points'])."";
-		$data['thumbnail'] = NULL;
+        $data['title'] = $xml->characterInfo->character['prefix'];
+        $data['thumbnail'] = NULL;
 		$data['calcClass']  = NULL;
 		
 		$data['guild'] = array();

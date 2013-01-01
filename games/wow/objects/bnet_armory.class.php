@@ -401,7 +401,7 @@ class bnet_armory {
 		$data['stats']['hitRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hitRating['value']);
 		$data['stats']['hasteRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hasteRating['hasteRating']);
 		$data['stats']['expertiseRating'] = "NULL";
-		$data['stats']['spellPower'] = utf8_decode($xml->characterInfo->characterTab->spell->bonusDamage['holy']);
+		$data['stats']['spellPower'] = utf8_decode($xml->characterInfo->characterTab->spell->bonusDamage->holy['value']);
 		$data['stats']['spellPen'] = utf8_decode($xml->characterInfo->characterTab->spell->penetration['value']);
 		$data['stats']['spellCrit'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance->holy['percent']);
 		$data['stats']['spellCritRating'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance['rating']);

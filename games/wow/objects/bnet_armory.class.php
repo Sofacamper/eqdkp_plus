@@ -364,15 +364,10 @@ class bnet_armory {
 			$gear[utf8_decode($item['slot'])]['id'] = utf8_decode($item['id']);
 			$gear[utf8_decode($item['slot'])]['name'] = utf8_decode($item['name']);
 			$gear[utf8_decode($item['slot'])]['level'] = utf8_decode($item['level']);
+			$gear['iLevelSum'] += utf8_decode($item['level']);
 		}		
-		$data['items'] = array();
-		$var = null;
-		$data['items']['averageItemLevel'] = "Hier GS ?";
-		for($i=0;$i<20;$i++) { //hack
-		$var= $var+utf8_decode($xml->characterInfo->characterTab->items->item[$i]['level']);
-		}
-		
-		$data['items']['averageItemLevelEquipped'] = round(($var/17),0);
+		$data['items']['averageItemLevel'] = "Hier GS ?";		
+		$data['items']['averageItemLevelEquipped'] = round(($gear['iLevelSum']/17),0);
 		
 		$data['items']['head']['id'] = $gear[$this->convert['gearSlotNr']['head']]['id'];
 		$data['items']['neck']['id'] = $gear[$this->convert['gearSlotNr']['neck']]['id'];

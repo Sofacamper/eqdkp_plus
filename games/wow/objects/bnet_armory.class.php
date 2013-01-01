@@ -426,7 +426,7 @@ class bnet_armory {
 		$data['stats']['hitRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hitRating['value']);
 		$data['stats']['hasteRating'] = utf8_decode($xml->characterInfo->characterTab->spell->hasteRating['hasteRating']);
 		$data['stats']['expertiseRating'] = "NULL";
-		$data['stats']['spellPower'] = utf8_decode($xml->characterInfo->characterTab->spell->bonusDamage['holy']);
+		$data['stats']['spellPower'] = utf8_decode($xml->characterInfo->characterTab->spell->bonusDamage->holy['value']);
 		$data['stats']['spellPen'] = utf8_decode($xml->characterInfo->characterTab->spell->penetration['value']);
 		$data['stats']['spellCrit'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance->holy['percent']);
 		$data['stats']['spellCritRating'] = utf8_decode($xml->characterInfo->characterTab->spell->critChance['rating']);
@@ -529,10 +529,23 @@ class bnet_armory {
 		$data['achievements']['criteriaTimestamp']  = array();
 		$data['achievements']['criteriaCreated']  = array();
 
+		// talents, glyphs
+                $url = 'http://armory.wow-castle.de/character-talents.xml?r=WoW-Castle+PvE&cn='.$user;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: de-de, de;"));
+                $talent_content = curl_exec ($ch);
+                curl_close ($ch);
+                $talent_xml = new SimpleXMLElement($talent_content);
+		
 		$data['talents'] = array();
 		$data['talents']['0'] = array();
 		$data['talents']['0']['talents'] = array();
 		$data['talents']['0']['glyphs'] = array();
+		foreach($talent_xml->characterInfo->talents->talentGroup['0']->glyphs->glyph as $glyph)
+			$data['talents']['0']['glyphs'][utf8_decode($glyph['type'])][] = array("item" => NULL, "glyph" => $glyph['glyph'], "name" => utf8_decode($glyph['name']), "icon" => NULL);
 		$data['talents']['0']['spec'] = array();
 		$data['talents']['0']['spec']['name'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['0']['prim']);
 		$data['talents']['0']['spec']['role'] = "NULL";
@@ -546,6 +559,8 @@ class bnet_armory {
 		
 		$data['talents']['1']['talents'] = array();
 		$data['talents']['1']['glyphs'] = array();
+                foreach($talent_xml->characterInfo->talents->talentGroup['1']->glyphs->glyph as $glyph)
+                        $data['talents']['1']['glyphs'][utf8_decode($glyph['type'])][] = array("item" => NULL, "glyph" => $glyph['glyph'], "name" => utf8_decode($glyph['name']), "icon" => NULL);
 		$data['talents']['1']['spec'] = array();
 		$data['talents']['1']['spec']['name'] = utf8_decode($xml->characterInfo->characterTab->talentSpecs->talentSpec['1']['prim']);
 		$data['talents']['1']['spec']['role'] = "NULL";

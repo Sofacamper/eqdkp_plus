@@ -127,6 +127,29 @@ class bnet_armory {
 			),
 			3	=> array('spell_nature_healingtouch')		// Druid
 		),
+		'gearSlotNr' => array(
+			'head' => 0, 
+			'neck' => 1,
+			'shoulder' => 2,
+			'back' => 14,
+			'chest' => 4,
+			'shirt' => 3,
+			'tabard' => 18,
+			'wrist' => 8,
+			
+			'hands' => 9,
+			'waist' => 5, //belt
+			'legs' => 6,
+			'feet' => 7,
+			'finger1' => 10,
+			'finger2' => 11,
+			'trinket1' => 12,
+			'trinket2' => 13,
+			
+			'mainHand' => 15,
+			'offHand' => 16,
+			'relik' => 17
+		),
 	);
 
 	private $serverlocs		= array(
@@ -334,36 +357,42 @@ class bnet_armory {
 				$data['feed'][$i]['achievement']['icon'] = "trade_engineering";
 			}
 		}
-		
+		//gear
+		$gear = array();
+		foreach($xml->characterInfo->characterTab->items->item as $item) {
+			$gear[utf8_decode($item['slot'])] = array();
+			$gear[utf8_decode($item['slot'])]['id'] = utf8_decode($item['id']);
+			$gear[utf8_decode($item['slot'])]['name'] = utf8_decode($item['name']);
+			$gear[utf8_decode($item['slot'])]['level'] = utf8_decode($item['level']);
+		}		
 		$data['items'] = array();
 		$var = null;
-
 		$data['items']['averageItemLevel'] = "Hier GS ?";
-		
 		for($i=0;$i<20;$i++) { //hack
 		$var= $var+utf8_decode($xml->characterInfo->characterTab->items->item[$i]['level']);
 		}
 		
 		$data['items']['averageItemLevelEquipped'] = round(($var/17),0);
-		$data['items']['head']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['0']['id']);
-		$data['items']['neck']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['1']['id']);
-		$data['items']['shoulder']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['2']['id']);		
-		$data['items']['back']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['14']['id']);		
-		$data['items']['chest']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['4']['id']);
-		$data['items']['shirt']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['3']['id']);		
-		$data['items']['tabart']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['18']['id']);		
-		$data['items']['wrist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['5']['id']);
-		$data['items']['hands']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['9']['id']);
-		$data['items']['waist']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['8']['id']);
-		$data['items']['legs']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['6']['id']);
-		$data['items']['feet']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['7']['id']);
-		$data['items']['finger1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['10']['id']);
-		$data['items']['finger2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['11']['id']);
-		$data['items']['trinket1']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['12']['id']);
-		$data['items']['trinket2']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['13']['id']);	
-		$data['items']['mainHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['15']['id']);
-		$data['items']['offHand']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['16']['id']);
-		$data['items']['relik']['id'] = utf8_decode($xml->characterInfo->characterTab->items->item['17']['id']);
+		
+		$data['items']['head']['id'] = $gear[$this->convert['gearSlotNr']['head']]['id'];
+		$data['items']['neck']['id'] = $gear[$this->convert['gearSlotNr']['neck']]['id'];
+		$data['items']['shoulder']['id'] = $gear[$this->convert['gearSlotNr']['shoulder']]['id'];		
+		$data['items']['back']['id'] = $gear[$this->convert['gearSlotNr']['back']]['id'];
+		$data['items']['chest']['id'] = $gear[$this->convert['gearSlotNr']['chest']]['id'];
+		$data['items']['shirt']['id'] = $gear[$this->convert['gearSlotNr']['shirt']]['id'];
+		$data['items']['tabart']['id'] = $gear[$this->convert['gearSlotNr']['tabart']]['id'];
+		$data['items']['wrist']['id'] = $gear[$this->convert['gearSlotNr']['wrist']]['id'];
+		$data['items']['hands']['id'] = $gear[$this->convert['gearSlotNr']['hands']]['id'];
+		$data['items']['waist']['id'] = $gear[$this->convert['gearSlotNr']['waist']]['id'];
+		$data['items']['legs']['id'] = $gear[$this->convert['gearSlotNr']['legs']]['id'];
+		$data['items']['feet']['id'] = $gear[$this->convert['gearSlotNr']['feet']]['id'];
+		$data['items']['finger1']['id'] = $gear[$this->convert['gearSlotNr']['finger1']]['id'];
+		$data['items']['finger2']['id'] = $gear[$this->convert['gearSlotNr']['finger2']]['id'];
+		$data['items']['trinket1']['id'] = $gear[$this->convert['gearSlotNr']['trinket1']]['id'];
+		$data['items']['trinket2']['id'] = $gear[$this->convert['gearSlotNr']['trinket2']]['id'];
+		$data['items']['mainHand']['id'] = $gear[$this->convert['gearSlotNr']['mainHand']]['id'];
+		$data['items']['offHand']['id'] = $gear[$this->convert['gearSlotNr']['offHand']]['id'];
+		$data['items']['relik']['id'] = $gear[$this->convert['gearSlotNr']['relik']]['id'];
 		
 		$data['stats'] = array();
 		$data['stats']['health'] = utf8_decode($xml->characterInfo->characterTab->characterBars->health['effective']);  

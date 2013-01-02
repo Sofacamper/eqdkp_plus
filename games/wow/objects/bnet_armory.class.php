@@ -323,7 +323,7 @@ class bnet_armory {
         $data['title'] = $xml->characterInfo->character['prefix'];
         $data['thumbnail'] = NULL;
 		$data['calcClass']  = NULL;
-		
+
 		$data['guild'] = array();
 		$data['guild']['name'] = utf8_decode($xml->characterInfo->character['guildName'])."";;
 		$data['guild']['realm'] = utf8_decode($xml->characterInfo->character['realm'])."";
@@ -376,7 +376,7 @@ class bnet_armory {
 		$data['items']['back']['id'] = $gear[$this->convert['gearSlotNr']['back']]['id'];
 		$data['items']['chest']['id'] = $gear[$this->convert['gearSlotNr']['chest']]['id'];
 		$data['items']['shirt']['id'] = $gear[$this->convert['gearSlotNr']['shirt']]['id'];
-		$data['items']['tabart']['id'] = $gear[$this->convert['gearSlotNr']['tabart']]['id'];
+		$data['items']['tabard']['id'] = $gear[$this->convert['gearSlotNr']['tabard']]['id'];
 		$data['items']['wrist']['id'] = $gear[$this->convert['gearSlotNr']['wrist']]['id'];
 		$data['items']['hands']['id'] = $gear[$this->convert['gearSlotNr']['hands']]['id'];
 		$data['items']['waist']['id'] = $gear[$this->convert['gearSlotNr']['waist']]['id'];

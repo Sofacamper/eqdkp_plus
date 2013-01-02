@@ -451,7 +451,6 @@
 				$this->game->glang('parry')			=> round($chardata['stats']['parry'], 2).'%',
 				$this->game->glang('block')			=> round($chardata['stats']['block'], 2).'%',
 				$this->game->glang('pvpresil')		=> round($chardata['stats']['pvpResilience'], 2).'%',
-				$this->game->glang('pvppower')		=> round($chardata['stats']['pvpPower'], 2).'%',
 			)
 		);
 

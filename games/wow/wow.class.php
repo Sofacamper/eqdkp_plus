@@ -425,65 +425,39 @@ if(!class_exists('wow')) {
 		 * parse the guild achievement overview of armory
 		 */
 		public function parseCharAchievementOverview($chardata){
-			$this->game->new_object('bnet_armory', 'armory', array($this->config->get('uc_server_loc'), $this->config->get('uc_data_lang')));
-
-			$arrAchievs = $chardata['achievements'];
-			$arrCharAchievementsData = $this->game->obj['armory']->getdata('character', 'achievements');
-			$arrOut = array();
-			$done = array();
-			$doneIDs = array();
-			$arrOut['total'] = array(
-				'total' => 0
-			);
-			foreach ($arrCharAchievementsData['achievements'] as $arrCatAchievs){
-				$completed = 0;
-				$achievs = 0;
-
-				foreach ($arrCatAchievs['achievements'] as $arrCatAchievs2){
-
-					//if (isset($done[$arrCatAchievs2['title']])) continue;
-					if (isset($doneIDs[$arrCatAchievs2['id']])) continue;
-					$done[$arrCatAchievs2['title']] = true;
-					$doneIDs[$arrCatAchievs2['id']] = true;
-
-					if (in_array((int)$arrCatAchievs2['id'], $arrAchievs['achievementsCompleted'])) $completed++;
-					$achievs++;
-				}
-
-				if (isset($arrCatAchievs['categories'])){
-					foreach ($arrCatAchievs['categories'] as $arrCatAchievs2){
-
-						foreach ($arrCatAchievs2['achievements'] as $arrCatAchievs3){
-							//if (isset($done[$arrCatAchievs3['title']])) continue;
-							if (isset($doneIDs[$arrCatAchievs3['id']])) continue;
-							$done[$arrCatAchievs3['title']] = true;
-							$doneIDs[$arrCatAchievs3['id']] = true;
-
-							if (in_array((int)$arrCatAchievs3['id'], $arrAchievs['achievementsCompleted'])) $completed++;
-							$achievs++;
-						}
-					}
-				}
-
-				$arrOut[$arrCatAchievs['id']] = array(
-					'id'	=> $arrCatAchievs['id'],
-					'name'	=> $arrCatAchievs['name'],
-					'total' => $achievs,
-					'completed' => $completed,
-				);
-			}
-
-			$total = 0;
-			foreach ($arrOut as $val){
-				$total += $val['total'];
-			}
-
-			$arrOut['total'] = array(
-				'total' 	=> $total,
-				'completed' => count($arrAchievs['achievementsCompleted']),
-				'name' 		=> $this->glang('guildachievs_total_completed'),
-			);
-
+            $url = 'http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$chardata['name'];
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: de-de, de;"));
+            $content = curl_exec ($ch);
+            curl_close ($ch);
+            $xml = new SimpleXMLElement($content);
+            $arrOut = array();
+            $list = array(
+                92 => 'Allgemein',
+                96 => 'Quests',
+                97 => 'Erkundung',
+                95 => 'Spieler gegen Spieler',
+                168 => 'Dungeon & Schlachtzug',
+                169 => 'Berufe',
+                201 => 'Ruf',
+                155 => 'Weltereignisse',
+                81 => 'Heldentaten',
+            );
+            $arrOut['total'] = array(
+                'total' 	=> utf8_decode($xml->achievements->summary->c['total']),
+                'completed' => utf8_decode($xml->achievements->summary->c['earned']),
+            );
+            for($i=0;$i<9;$i++) {
+                $arrOut[utf8_decode($xml->achievements->summary->category[$i]->c['categoryId'])] = array(
+                    'id' => utf8_decode($xml->achievements->summary->category[$i]->c['categoryId']),
+                    'name' => $list[utf8_decode($xml->achievements->summary->category[$i]->c['categoryId'])],
+                    'total' => utf8_decode($xml->achievements->summary->category[$i]->c['total']),
+                    'completed' => utf8_decode($xml->achievements->summary->category[$i]->c['earned']),
+                );
+            }
 			return $arrOut;
 		}
 

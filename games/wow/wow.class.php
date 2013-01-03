@@ -495,31 +495,26 @@ if(!class_exists('wow')) {
 		 * parse the latest char achievements of armory
 		 */
 		public function parseLatestCharAchievements($chardata, $charname, $intCount = 10){
-			$this->game->new_object('bnet_armory', 'armory', array($this->config->get('uc_server_loc'), $this->config->get('uc_data_lang')));
-
-			$arrAchievs			= $chardata['achievements'];
-			$arrAchieveTimes	= $arrAchievs['achievementsCompletedTimestamp'];
-			$arrAchievs			= $arrAchievs['achievementsCompleted'];
-			array_multisort($arrAchieveTimes, SORT_DESC, SORT_NUMERIC, $arrAchievs);
-			$count = 0;
-			$arrCharAchievementsData = $this->game->obj['armory']->getdata('character', 'achievements');
-
+			$url = 'http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$chardata['name'];
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: de-de, de;"));
+			$content = curl_exec ($ch);
+			curl_close ($ch);
+			$xml = new SimpleXMLElement($content);
 			$arrAchievsOut = array();
-			foreach($arrAchievs as $key => $achievID){
-				if ($count == $intCount) break;
-				$count++;
-				$achievData = $this->game->obj['armory']->achievement($achievID);
-				if ($achievData){
-					$class = ($achievData['accountWide'] == 1) ? 'accountwide' : '';
-					$arrAchievsOut[] = array(
-						'name'	=> '<a href="'.$this->game->obj['armory']->bnlink($charname, $this->config->get('uc_servername'), 'achievements').'#'.$this->game->obj['armory']->getCategoryForAchievement($achievID, $arrCharAchievementsData).':a'.$achievID.'" class="'.$class.'">'.$achievData['title'].'</a>',
-						'icon'	=> '<img src="http://eu.media.blizzard.com/wow/icons/18/'.$achievData['icon'].'.jpg" alt="" />',
-						'desc'	=> $achievData['description'],
-						'points'=> $achievData['points'],
-						'date'	=> substr($arrAchieveTimes[$key], 0, -3),
-
-					);
-				}
+			for($i=0;$i<6;$i++){
+				$arrAchievsOut[$i] = array();
+				$arrAchievsOut[$i]['name'] = 	'<a href=http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$charname.':a'.$achievID.'class=BOSSKILL>'.$xml->achievements->summary->achievement[$i]['title']."</a>";
+				$arrAchievsOut[$i]['icon'] = 	'<img src="http://eu.media.blizzard.com/wow/icons/18/'.utf8_decode($xml->achievements->summary->achievement[$i]['icon']).'.jpg" alt="" />'; 				
+				$arrAchievsOut[$i]['desc'] = 	'</br>'.$xml->achievements->summary->achievement[$i]['desc'];
+				$arrAchievsOut[$i]['points'] = 	$xml->achievements->summary->achievement[$i]['points'];	
+				//todo
+				// blizz: [date] => 1357151580 castle: 2012-12-30T20:14:40:+01:00
+				//$arrAchievsOut[$i]['date'] = 	$xml->achievements->summary->achievement[$i]['dataCompleted'];
+				
 			}
 			return $arrAchievsOut;
 		}

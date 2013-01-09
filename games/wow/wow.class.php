@@ -507,7 +507,7 @@ if(!class_exists('wow')) {
 			$arrAchievsOut = array();
 			for($i=0;$i<6;$i++){
 				$arrAchievsOut[$i] = array();
-				$arrAchievsOut[$i]['name'] = 	'<a href=http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$charname.':a'.$achievID.'class=BOSSKILL>'.$xml->achievements->summary->achievement[$i]['title']."</a>";
+				$arrAchievsOut[$i]['name'] = 	'<a href=http://armory.wow-castle.de/character-achievements.xml?r=WoW-Castle+PvE&cn='.$charname.'>'.$xml->achievements->summary->achievement[$i]['title']."</a>";
 				$arrAchievsOut[$i]['icon'] = 	'<img src="http://eu.media.blizzard.com/wow/icons/18/'.utf8_decode($xml->achievements->summary->achievement[$i]['icon']).'.jpg" alt="" />'; 				
 				$arrAchievsOut[$i]['desc'] = 	'</br>'.$xml->achievements->summary->achievement[$i]['desc'];
 				$arrAchievsOut[$i]['points'] = 	$xml->achievements->summary->achievement[$i]['points'];	

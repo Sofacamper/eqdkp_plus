@@ -367,7 +367,7 @@ class bnet_armory {
 			$gear[utf8_decode($item['slot'])]['level'] = utf8_decode($item['level']);
 			$gear['iLevelSum'] += utf8_decode($item['level']);
 		}		
-		$data['items']['averageItemLevel'] = "Hier GS ?";		
+		$data['items']['averageItemLevel'] = null;		
 		$data['items']['averageItemLevelEquipped'] = round(($gear['iLevelSum']/17),0);
 		
 		$data['items']['head']['id'] = $gear[$this->convert['gearSlotNr']['head']]['id'];

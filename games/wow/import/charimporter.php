@@ -341,7 +341,7 @@ class charImporter extends page_generic {
 
 	public function perform_step2(){
 		$data = array(
-			'name'				=> $this->in->get('member_name'),
+            'name'              =>  ucfirst(strtolower($this->in->get('member_name'))),
 			'lvl'				=> $this->in->get('member_level', 0),
 			'gender'			=> $this->in->get('gender', 'Male'),
 			'raceid'			=> $this->in->get('member_race_id', 0),
@@ -358,7 +358,7 @@ class charImporter extends page_generic {
 			'second_bar'		=> $this->in->get('second_bar', 0),
 			'second_name'		=> $this->in->get('second_name', ''),
 		);
-		var_dump($this->in->get('member_id', 0));
+        var_dump($this->in->get('member_id', 0));
 		var_dump($this->in->get('overtakeuser', 0));
 
 		$info		= $this->pdh->put('member', 'addorupdate_member', array($this->in->get('member_id', 0), $data, $this->in->get('overtakeuser', 0)));

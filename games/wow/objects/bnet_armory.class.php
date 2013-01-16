@@ -312,22 +312,22 @@ class bnet_armory {
 		$xml = new SimpleXMLElement($content);
 		
 		$data = array();
-		$data['lastModified] '] = utf8_decode($xml->characterInfo->character['lastModified']).""; 
-		$data['name'] = utf8_decode($xml->characterInfo->character['name']).""; 
-		$data['realm'] = utf8_decode($xml->characterInfo->character['realm'])."";
-		$data['battleGroup'] = utf8_decode($xml->characterInfo->character['battleGroup'])."";
-		$data['class'] = utf8_decode($xml->characterInfo->character['classId'])."";
-		$data['race'] = utf8_decode($xml->characterInfo->character['raceId'])."";
-		$data['level'] = utf8_decode($xml->characterInfo->character['level'])."";
-		$data['achievementPoints'] = utf8_decode($xml->characterInfo->character['points'])."";
+		$data['lastModified] '] = utf8_decode($xml->characterInfo->character['lastModified']); 
+		$data['name'] = utf8_decode($xml->characterInfo->character['name']); 
+		$data['realm'] = utf8_decode($xml->characterInfo->character['realm']);
+		$data['battleGroup'] = utf8_decode($xml->characterInfo->character['battleGroup']);
+		$data['class'] = utf8_decode($xml->characterInfo->character['classId']);
+		$data['race'] = utf8_decode($xml->characterInfo->character['raceId']);
+		$data['level'] = utf8_decode($xml->characterInfo->character['level']);
+		$data['achievementPoints'] = utf8_decode($xml->characterInfo->character['points']);
         $data['title'] = $xml->characterInfo->character['prefix'];
         $data['thumbnail'] = NULL;
 		$data['calcClass']  = NULL;
 
 		$data['guild'] = array();
-		$data['guild']['name'] = utf8_decode($xml->characterInfo->character['guildName'])."";;
-		$data['guild']['realm'] = utf8_decode($xml->characterInfo->character['realm'])."";
-		$data['guild']['battlegroup'] = utf8_decode($xml->characterInfo->character['battleGroup'])."";
+		$data['guild']['name'] = utf8_decode($xml->characterInfo->character['guildName']);
+		$data['guild']['realm'] = utf8_decode($xml->characterInfo->character['realm']);
+		$data['guild']['battlegroup'] = utf8_decode($xml->characterInfo->character['battleGroup']);
 		$data['guild']['level'] = "NULL";
 		$data['guild']['members'] = NULL;
 		$data['guild']['achievementPoints'] = "NULL";
